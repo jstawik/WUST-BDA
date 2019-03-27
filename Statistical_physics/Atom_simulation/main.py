@@ -14,12 +14,15 @@ class Chamber:
                 self.chamber.nodes[(x, y)]['id'] = None
         for x in range(width):
             for y in range(height):
-                self.chamber.add_edge((x, y), ((x+1) % self.width, y))
-                self.chamber.add_edge((x, y), (x, (y+1) % self.height))
+                self.chamber.add_edge((x, y), ((x+1) % self.width, y), weight=(1, 0))
+                self.chamber.add_edge(((x+1) % self.width, y), (x, y),  weight=(-1, 0))
+                self.chamber.add_edge((x, y), (x, (y+1) % self.height), weight=(0, -1))
+                self.chamber.add_edge((x, (y+1) % self.height), (x, y), weight=(0, -1))
+
         if atoms > width * height:
             print('Chamber empty - number of atoms exceeds number of cells')
         else:
-            self.atom_history = dict((key, '') for key in range(atoms))
+            self.atom_history = dict((key, []) for key in range(atoms))
             self.atom_location = {}
             tmp = list(self.chamber.nodes)
             shuffle(tmp)
@@ -28,19 +31,29 @@ class Chamber:
                 self.atom_location[i] = node
 
     def chamber_step(self):
-        for atom in self.atom_location:
-            neigh = dict(self.chamber[self.atom_location[atom]]).items() #doesnt work
-            neigh = list(filter(lambda x: x[1] == {}, neigh))
-            print(neigh)# = filter(lambda x: x.key is None, neigh)
-            print(list(neigh))
+        for index, atom in self.atom_location.items():
+            avail = []
+            for neigh in self.chamber[atom]:
+                if self.chamber.node[neigh]['id'] is None:
+                    avail += (neigh,)
+            try:
+                new_location = choice(avail)
+                change = (self.chamber.edges[atom, new_location]['weight'])
+                self.atom_history[index] += change
+                self.atom_location[index] = new_location
+            except IndexError:
+                pass
 
 
 if __name__ == '__main__':
-    b = Chamber(5, 5, 20)
+    b = Chamber(5, 5, 10)
     a = b.chamber
     print(a)
     print(a.nodes.data())
     print(list(nx.neighbors(a, (3, 3))))
     print(b.atom_history)
     print(b.atom_location)
-    b.chamber_step()
+    for i in range(10):
+        b.chamber_step()
+        print(b.atom_history)
+        print(b.atom_location)
