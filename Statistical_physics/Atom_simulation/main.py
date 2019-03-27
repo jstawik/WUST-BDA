@@ -1,5 +1,11 @@
 import networkx as nx
 from random import choice, shuffle
+from time import time
+from math import sqrt
+
+
+def t2_sum(a, b):
+    return a[0]+b[0], a[1]+b[1]
 
 
 class Chamber:
@@ -22,7 +28,7 @@ class Chamber:
         if atoms > width * height:
             print('Chamber empty - number of atoms exceeds number of cells')
         else:
-            self.atom_history = dict((key, []) for key in range(atoms))
+            self.atom_history = dict((key, (0, 0)) for key in range(atoms))
             self.atom_location = {}
             tmp = list(self.chamber.nodes)
             shuffle(tmp)
@@ -39,21 +45,18 @@ class Chamber:
             try:
                 new_location = choice(avail)
                 change = (self.chamber.edges[atom, new_location]['weight'])
-                self.atom_history[index] += change
+                self.atom_history[index] = t2_sum(change, self.atom_history[index])
                 self.atom_location[index] = new_location
             except IndexError:
+                # self.atom_history[index[ += (0, 0)
                 pass
 
 
 if __name__ == '__main__':
-    b = Chamber(5, 5, 10)
+    b = Chamber(20, 20, 150)
     a = b.chamber
-    print(a)
-    print(a.nodes.data())
-    print(list(nx.neighbors(a, (3, 3))))
-    print(b.atom_history)
-    print(b.atom_location)
-    for i in range(10):
+    TS = time()
+    for i in range(10000):
         b.chamber_step()
-        print(b.atom_history)
-        print(b.atom_location)
+    print("Execution time: ", str(time() - TS))
+
