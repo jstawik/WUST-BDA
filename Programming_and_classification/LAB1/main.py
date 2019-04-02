@@ -83,7 +83,7 @@ def eight(l:list):
 
 # 9:
 def nine(text:str):
-    res=sorted(text, key=lambda i: text.count(i))
+    res = sorted(text, key=lambda i: text.count(i))
     print(res[0], res[-1])
 
 # 10: (since python does this oob with `f'{number:b}'` f.e.: print(f'{123:b}') will print `1111011` I assume this needs
@@ -99,6 +99,8 @@ def ten(number:int):
     else:
         ten(int(number/2))
         print(0, end='')
+
+
 if __name__ == "__main__":
     one()
     two()
@@ -108,6 +110,7 @@ if __name__ == "__main__":
     five([1, 2, 3, 4], [2, 4, 6, 8])
     six('Lorem ipsum sit amet', 'm')
     seven('j3ZpuW0PaQSfBAphKYg8')
-    eight([1,2,3,4])
+    eight([1, 2, 3, 4])
     nine('It actually did remind him of a spider, in fact. One particular genus that had become legendary among invertebrate zoologists and computational physicists alike: a problem-solver that improvised and drew up plans far beyond anything that should have been able to fit into such a pinheaded pair of ganglia. Portia. The eight-legged cat, some had called it. The spider that thought like a mammal.')
     ten(1337)
+    nine('aaab')
