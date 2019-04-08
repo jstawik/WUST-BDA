@@ -53,8 +53,8 @@ def nineteen():
 
 def twenty(a):
     sents = sent_tokenize(' '.join(a))
-    idx, _ = max([(i, len(x)) for (i, x) in enumerate(sents)], key=lambda x: x[1])
-    return sents[idx]
+    idx, length = max([(i, len(x)) for (i, x) in enumerate(sents)], key=lambda x: x[1])
+    return length, sents[idx]
 
 
 if __name__ == "__main__":
