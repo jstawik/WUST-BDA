@@ -1,7 +1,8 @@
 import networkx as nx
 from random import choice, shuffle
 from time import time
-from math import sqrt
+from statistics import mean
+import matplotlib.pyplot as plt
 
 
 def t2_sum(a, b):
@@ -9,7 +10,8 @@ def t2_sum(a, b):
 
 
 class Chamber:
-    chamber = nx.Graph()
+    chamber = nx.DiGraph()
+    steps = 0
 
     def __init__(self, width, height, atoms):
         self.width = width
@@ -22,12 +24,13 @@ class Chamber:
             for y in range(height):
                 self.chamber.add_edge((x, y), ((x+1) % self.width, y), weight=(1, 0))
                 self.chamber.add_edge(((x+1) % self.width, y), (x, y),  weight=(-1, 0))
-                self.chamber.add_edge((x, y), (x, (y+1) % self.height), weight=(0, -1))
+                self.chamber.add_edge((x, y), (x, (y+1) % self.height), weight=(0, 1))
                 self.chamber.add_edge((x, (y+1) % self.height), (x, y), weight=(0, -1))
 
         if atoms > width * height:
             print('Chamber empty - number of atoms exceeds number of cells')
         else:
+            self.density: float = atoms/(width*height)
             self.atom_history = dict((key, (0, 0)) for key in range(atoms))
             self.atom_location = {}
             tmp = list(self.chamber.nodes)
@@ -48,15 +51,36 @@ class Chamber:
                 self.atom_history[index] = t2_sum(change, self.atom_history[index])
                 self.atom_location[index] = new_location
             except IndexError:
-                # self.atom_history[index[ += (0, 0)
                 pass
+        self.steps += 1
+
+    def get_diffusion(self):
+        return sum([x**2 + y**2 for x, y in self.atom_history.values()])/(len(self.atom_history)*4*self.steps)
+
+
+def testing():
+    b = Chamber(20, 20, 200)
+    TS = time()
+    for i in range(1000):
+        b.chamber_step()
+    print(b.get_diffusion())
+    print("Execution time: ", str(time() - TS))
 
 
 if __name__ == '__main__':
-    b = Chamber(20, 20, 150)
-    a = b.chamber
-    TS = time()
-    for i in range(10000):
-        b.chamber_step()
-    print("Execution time: ", str(time() - TS))
-
+    pass
+    # Steps / diffusion:
+    res = []
+    a = Chamber(20, 20, 200)
+    for i in range(0, 500):
+        a.chamber_step()
+        res.append((a.steps, a.get_diffusion()))
+    print(res)
+    # density/diffusion
+    res = []
+    for i in range(10, 400, 10):
+        a = Chamber(20, 20, i)
+        for _ in range(100):
+            a.chamber_step()
+        res.append((i, a.get_diffusion()))
+    print(res)
