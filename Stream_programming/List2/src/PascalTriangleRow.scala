@@ -1,7 +1,7 @@
 class PascalTriangleRow(val n: Int) {
   var row:Array[Int] = init(n)
   def init(n: Int): Array[Int] ={
-    var ret: Array[Int] = new Array[Int](n)
+    val ret: Array[Int] = new Array[Int](n)
     ret(0) = 1
     for(i <- 1 until n){
       for(j <- i to 1 by -1){
@@ -15,9 +15,17 @@ class PascalTriangleRow(val n: Int) {
   }
 }
 
-object TestP{
+object TestP {
   def main(args: Array[String]): Unit = {
-    val triangle = new PascalTriangleRow(10)
+    val triangle = new PascalTriangleRow(args(0).toInt)
+    for (arg <- args.slice(1, args.length)) {
+      try {
+        println(triangle.row(arg.toInt))
+      } catch {
+        case ex: Exception => println(f"$arg is not a valid index")
+      }
+    }
+    println()
     triangle.display()
   }
 }
