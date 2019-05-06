@@ -2,12 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="030e18ea-33ef-4568-b277-3d458b1b41b4" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/../List_4/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../List_4/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../List_4/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../List_4/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../List_4/List_4.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../List_4/src/MisraGries.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
@@ -81,7 +75,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1557185924229" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1557186166499" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -135,6 +129,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="953" y="40" width="974" height="1167" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.3249453" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
