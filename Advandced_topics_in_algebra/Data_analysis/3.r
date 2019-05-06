@@ -2,6 +2,9 @@
 #library(ggridges)
 #library(ggExtra)
 #library(gganimate)
+library(pracma)
+
+
 plot.frequency.spectrum <-function(X.k, xlimits=c(0,length(X.k)/2)) {
   #horizontal axis from zero to Nyquist frequency
   plot.data  <-cbind(0:(length(X.k)-1), Mod(X.k))
@@ -43,24 +46,67 @@ plot(wave.5)
 plot.frequency.spectrum(fft(wave.5))
   
 AP <- AirPassengers
-rawAP <- AP[0:-1]
-df <- data.frame(x=seq(1, length(rawAP)), y=rawAP)
+rawaP <- AP
+# df <- data.frame(x=seq(1, length(rawAP)), y=rawAP)
 #reg = lm(y ~ log(x), data=df)
 #reg <- as.list(reg)$coefficients
 #reg <- unname(reg)
 #curve(reg[1]+reg[2]*log(x), add=TRUE)
-plot(rawAP)
+
+plot(rawAP)   # , type="o"
 plot.frequency.spectrum(fft(rawAP))
-rawAP <- rawAP - mean(rawAP)
-plot.frequency.spectrum(fft(rawAP))
-plot(rawAP)
-trend <- lm(rawAP ~ (seq(1:length(rawAP))))
-detrended.rawAP <- trend$residuals
-plot(rawAP); abline(trend)
+
+rawAPdeMeaned <- rawAP - mean(rawAP) #can also use detrend
+
+plot(rawAPdeMeaned)
+plot.frequency.spectrum(fft(rawAPdeMeaned))
+
+# trend <- lm(rawAP ~ (seq(1:length(rawAP))))
+# detrended.rawAP <- trend$residuals
+
+# plot(rawAP); abline(trend)
+# plot.frequency.spectrum(fft(rawAP))
+rawAPlinDetrended <- detrend(rawAPdeMeaned)
+
+plot(rawAPlinDetrended)
+plot.frequency.spectrum(fft(rawAPlinDetrended))
+
+decomposedAP <- decompose(AP)
+plot(decomposedAP)
+
+# --------------- 4 below ------------------
+
+sum(AP^2) - sum(Mod(fft(AP))^2/length(AP)) #-1.862645e-09 counts as 0, right? :D
+
+# --------------- 5 below ------------------
+
+#Had to manually reformat the dates from %Y-%m to %Y-%m-%d because
+#> ds$Month[1]
+#[1] "1749-01"
+#> as.Date(ds$Month[1])
+#Error in charToDate(x) : 
+#  character string is not in a standard unambiguous format
+#> as.Date(ds$Month[1], format="%Y-%m")
+#[1] NA
+#> lct <- Sys.getlocale("LC_TIME"); Sys.setlocale("LC_TIME", "C")
+#[1] "C"
+#> as.Date(ds$Month[1], format="%Y-%m")
+#[1] NA
+#sed ftw tho
+#  sed -i 's/,/-01,/' sun_spots.csv
+
+
+ds <- read.csv(file="c:/atia/sun_spots.csv", header=TRUE, sep =",", stringsAsFactors=FALSE)
+ds$Month <- as.Date(ds$Month)
+filtDS <-  ds[complete.cases(ds),]
+plot(ds)
+plot(decompose(ds$Sunspots))
+plot.frequency.spectrum(fft(filtDS$Sunspots), xlimits=c(0,150))
+deMeanedDS <- filtDS$Sunspots - mean(filtDS$Sunspots)
+plot.frequency.spectrum(fft(deMeanedDS), xlimits=c(0,150))
+deTrendedDS <- detrend(deMeanedDS)
+plot(deTrendedDS)
+plot.frequency.spectrum(fft(deTrendedDS), xlimits=c(0,150))
 
 
 
-  
-ds <- read.csv(file="c:/atia/sun_spots.csv", header=FALSE, sep =",")
-#plot(ds)
-plot.frequency.spectrum(fft(ds))
