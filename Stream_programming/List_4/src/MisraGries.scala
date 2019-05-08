@@ -5,26 +5,44 @@ class MisraGries(val accu: Int) {
   def input(): Stream[Any]= {
     if(r.nextBoolean()) math.floor(r.nextGaussian()*5) #:: input() //wouldn't be too frequent otherwise
     else (r.nextGaussian()*5).asInstanceOf[Int] #:: input()}
-  def misraGries(elems: Int): Map[Any, Int] ={
-    val A: Map[Any, Int] = Map()
+  def misraGries(elems: Int): (Map[Int, Int], Map[Double, Int]) ={
+    var I = Map[Int, Int]()
+    var D = Map[Double, Int]()
     for(i <- input() take elems){
-      A get i match {
-        case Some(a) => A + (i -> (a + 1))
-        case None =>
-          if(A.keys.size < accu-1) A + (i -> 1)
-          else {
-            A.mapValues(_ -1)
-            for(i <- A.iterator) if(A(i) == 0) A -=  i
+      if(i.isInstanceOf[Int]){
+        val j = i.asInstanceOf[Int]
+        if(I.keySet.contains(j)) I.update(j, I(j)+1)
+        else{
+          if(I.keys.size < accu){
+            I.update(j, 1)
+          }
+          else{
+            for(x <- I.keys) if(I(x) == 0) I -= x
           }
         }
       }
-    A
+      else {
+        val j = i.asInstanceOf[Double]
+        if(D.keySet.contains(j)) D.update(j, D(j)+1)
+        else{
+          if(D.keys.size < accu){
+            D.update(j, 1)
+          }
+          else{
+            for(x <- D.keys) if(D(x) == 0) D -= x
+          }
+        }
+      }
+    }
+    (I, D)
   }
 }
 
 object Test{
   def main(args: Array[String]): Unit = {
     val ob = new MisraGries(5)
+    for(i <- ob.input() take 10)
+      println(i)
     println(ob.misraGries(100))
   }
 }
