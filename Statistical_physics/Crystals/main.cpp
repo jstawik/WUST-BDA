@@ -6,8 +6,8 @@
 #define PI 3.14159265
 using namespace std;
 
-int L = 20;
-int LATTICE [20][20];
+#define L 50
+int LATTICE [L][L];
 int SKIPSTEPS = 30000;
 int CONFIGS = 1500;
 int DELTA = 10;
