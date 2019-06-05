@@ -5,8 +5,8 @@
 #include <ctime>
 
 using namespace std;
-
-#define L 100
+// a new binary must be compiled for each lattice size
+#define L 10
 int LATTICE [L][L];
 int SKIPSTEPS = 30000;
 int CONFIGS = 5000;
@@ -54,11 +54,29 @@ void MCS(int steps, double T){
         }
     }
 }
-double avg_spin(){
+double calculate_avg_energy(){
+    double energy = 0;
+    for(int x = 0; x < L; x++){
+        for(int y = 0; y < L; y++){
+            if(x == 0 and y ==0) energy -= LATTICE[x][y] * (LATTICE[((x+1)%L)][y] + LATTICE[L-1][y] + LATTICE[x][((y+1)%L)] + LATTICE[x][L-1]);
+            else if(x == 0) energy -= LATTICE[x][y] * (LATTICE[((x+1)%L)][y] + LATTICE[L-1][y] + LATTICE[x][((y+1)%L)] + LATTICE[x][((y-1)%L)]);
+            else if(y == 0) energy -= LATTICE[x][y] * (LATTICE[((x+1)%L)][y] + LATTICE[((x-1)%L)][y] + LATTICE[x][((y+1)%L)] + LATTICE[x][L-1]);
+            else energy -= LATTICE[x][y] * (LATTICE[((x+1)%L)][y] + LATTICE[((x-1)%L)][y] + LATTICE[x][((y+1)%L)] + LATTICE[x][((y-1)%L)]);
+        }
+    }
+    return energy/(2*pow(L, 2));
+}
+double calculate_avg_spin(){
     double sum = 0;
     for(int i = 0; i < L; i++)
         for(int j = 0; j< L; j++) sum += LATTICE[i][j];
     return sum/pow(L, 2);
+}
+double calculate_tot_mag(){
+    double sum = 0;
+    for(int i = 0; i < L; i++)
+        for(int j = 0; j< L; j++) sum += LATTICE[i][j];
+    return sum;
 }
 
 int main(int argc, char *argv[]) {
@@ -73,54 +91,35 @@ int main(int argc, char *argv[]) {
    // Skip to stable
     MCS(SKIPSTEPS, T);
     // Calculations
-    double magtmp = 0;
-    double mag = 0;
-    double mag2 = 0;
-    double ener = 0;
-    double ener2 = 0;
-    double enertmp = 0;
-    double binder2 = 0;
-    double binder4 = 0;
-    double bindertmp = 0;
-
+    double mag = 0, mag2 = 0, magtmp = 0;
+    double ener = 0, ener2 = 0, enertmp = 0;
+    double binder = 0, binder2 = 0, binder4 = 0, bindertmp = 0;
+    double susc = 0;
+    double sheat = 0;
 
     for(int n = 0; n < CONFIGS; n++){
         MCS(50, T);
-        magtmp = abs(avg_spin());
+        magtmp = abs(calculate_avg_spin());
         mag += magtmp;
         mag2 += pow(magtmp, 2);
-
-        for(int x = 0; x < L; x++)
-            for(int y = 0; y < L; y++){
-                if(x == 0 and y ==0) enertmp = calculate_energy(LATTICE[x][y], LATTICE[((x+1)%L)][y]
-                            , LATTICE[L-1][y]
-                            , LATTICE[x][((y+1)%L)]
-                            , LATTICE[x][L-1]);
-                else if(x == 0) enertmp = calculate_energy(LATTICE[x][y], LATTICE[((x+1)%L)][y]
-                            , LATTICE[L-1][y]
-                            , LATTICE[x][((y+1)%L)]
-                            , LATTICE[x][((y-1)%L)]);
-                else if(y == 0) enertmp = calculate_energy(LATTICE[x][y], LATTICE[((x+1)%L)][y]
-                            , LATTICE[((x-1)%L)][y]
-                            , LATTICE[x][((y+1)%L)]
-                            , LATTICE[x][L-1]);
-                else enertmp = calculate_energy(LATTICE[x][y], LATTICE[((x+1)%L)][y]
-                            , LATTICE[((x-1)%L)][y]
-                            , LATTICE[x][((y+1)%L)]
-                            , LATTICE[x][((y-1)%L)]);
-                bindertmp += LATTICE[x][y];
-            }
-        ener -= enertmp/4;
-        ener2 += pow(enertmp, 2)/4;
+        enertmp = calculate_avg_energy();
+        ener += enertmp;
+        ener2 += pow(enertmp, 2);
+        bindertmp = calculate_tot_mag();
         binder2 += pow(bindertmp, 2);
         binder4 += pow(bindertmp, 4);
     }
     mag /= CONFIGS;
-    double sus = CONFIGS*(mag2/CONFIGS-pow(mag, 2))/T;
+    mag2 /= CONFIGS;
     ener /= CONFIGS;
-    double sheat = (ener2/CONFIGS-pow(ener, 2))/pow(T, 2);
-    double binder = 1- ((binder4/CONFIGS)/(3*pow(binder2/CONFIGS, 2)));
-    cout<<T<<", "<<mag<<", "<<ener<<", "<<sus<<", "<<sheat<<", "<<binder<<"\n";
+    ener2 /= CONFIGS;
+    binder2 /= CONFIGS;
+    binder4 /= CONFIGS;
+    // Thermodynamics quantities
+    susc = (pow(L, 2)/T)*(mag2-pow(mag, 2));
+    sheat = pow(L, 2)/pow(T, 2)*(ener2-pow(ener, 2));
+    binder = 1 - (binder4/(3*pow(binder2, 2)));
+    cout<<T<<", "<<mag<<", "<<ener<<", "<<susc<<", "<<sheat<<", "<<binder<<"\n";
 
     // print_lattice();
     /* FLIPS CODE
@@ -130,5 +129,4 @@ int main(int argc, char *argv[]) {
     }
     FLIPS CODE */
     return 0;
-
 }
