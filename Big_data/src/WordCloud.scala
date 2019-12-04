@@ -9,12 +9,16 @@ object WordCloud {
     val data = dataHook.mkString
       .split("<pre>")(1)
       .split("</pre>")(0)
+      .split("\n")
+      .drop(185)
+      .dropRight(1049)
+      .mkString("\n")
       .split(" ")
       .map(_.trim)
       .map(_.toUpperCase) //First words in a sentence are still words. I don't want to make lennie clarke with "toLower"
       .filterNot(stopWords.contains(_))
       .filterNot(Seq("PETER", "WATTS", "I", "IT", "", "-").contains(_))
-      .map(_.replaceAll("[',.;\":?/]", ""))
+      .map(_.replaceAll("[',.;\":?/*]", ""))
       .groupBy(identity).mapValues(_.length) //group by me, create map with group size (neato)
       .toSeq.sortBy(- _._2)
     dataHook.close()
