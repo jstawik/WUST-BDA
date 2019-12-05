@@ -7,7 +7,7 @@ object TfIdf {
       .split("\n")
       .drop(185)
       .dropRight(1049)
-      .map(_.replaceAll("[',.;\":?/*]", ""))
+      .map(_.replaceAll("[',.;\":?/*|]", ""))
       .map(_.toLowerCase)
       .map(_.replaceAll("\\s\\s+", ""))
       .mkString("\n")
@@ -20,6 +20,9 @@ object TfIdf {
     val chCount = chapters.length
     val wIDF: Map[String, Double] = allWords.view.map(word => word -> math.log(chCount.toDouble/chapters.map(_.contains(word)).count(identity))).toMap
     val tfidf = chTF.map(mi => mi.transform((k, v) => v*wIDF.getOrElse(k, 0.0)))
-    tfidf.foreach(println)
+    val toptfidf = tfidf.map(_.toSeq.sortWith(_._2 > _._2).take(20))
+    def findChapter(word: String) ={
+      tfidf.map(mi => (mi, mi.getOrElse(word, 0.0))).toSeq.sortWith(_._2 > _._2)
+    }
   }
 }
