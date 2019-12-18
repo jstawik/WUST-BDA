@@ -5,8 +5,9 @@ instance Functor Tree where
 
 foldrT :: (t -> t1 -> t) -> t -> Tree t1 -> t
 foldrT f acc (Leaf x) = f acc x
---foldrT f acc (Node a xs) = foldr f (f acc a) xs  
-foldrT f acc (Node a xs) = f (foldr (\ac1 t-> foldrT f ac1 t) acc xs) a 
+foldrT f acc (Node a (x:xs)) = f (foldr (\i ac1 -> foldrT f ac1 i) (foldrT f acc x) xs) a
+    
+--foldrT f acc (Node a xs) = foldr (map ()  
 --foldrT f acc (Node l x r) = foldrT f (f (foldrT f acc r) x) l
 
 countT :: Tree a -> (Int, Int)
@@ -28,6 +29,7 @@ heigthT (Node _ xs) = 1 + maximum (map (heigthT) xs)
 -- Testing 
 test_tree = Node 2 [(Leaf 1),  (Node 4 [(Leaf 3),  (Leaf 5), Leaf(6)])]
 -- fmap (+1) test_tree
+-- foldrT (+) 0 test_tree
 -- countT test_tree
 -- checkT 2 test_tree
 -- checkT 12 test_tree
