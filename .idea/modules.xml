@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/Big_data/Big_data.iml" filepath="$PROJECT_DIR$/Big_data/Big_data.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/WUST-BDA.iml" filepath="$PROJECT_DIR$/.idea/WUST-BDA.iml" />
     </modules>
   </component>
