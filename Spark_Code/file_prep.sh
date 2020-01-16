@@ -5,3 +5,4 @@ hdfs dfs -put /home/cloudera/code/WUST-BDA/Big_data/resources/maelstrom.txt /dat
 hdfs dfs -put /home/cloudera/code/WUST-BDA/Big_data/resources/stopwords.txt /data
 # hdfs dfs -put /home/cloudera/code/WUST-BDA/Big_data/resources/digits.txt /data
 hdfs dfs -put /home/cloudera/code/WUST-BDA/Big_data/resources/example_graph.txt /data
+hdfs dfs -put /home/cloudera/code/WUST-BDA/Big_data/resources/web-Stanford.txt /data
