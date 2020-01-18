@@ -2,7 +2,7 @@ import igraph as ig
 from random import random
 
 # Nodes are required to have the following values:
-# id
+# name
 # decision (which takes a value from -1, 0, 1 (decline, undecided, buy))
 
 
