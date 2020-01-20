@@ -9,7 +9,7 @@ from random import uniform
 def decision(n: int):
     if n <= -1:
         return False
-    elif n <= 3:
+    elif n < 3:
         return (n + 1) * 0.3 > uniform(0, 1)
     else:
         return 0.9 > uniform(0, 1)
