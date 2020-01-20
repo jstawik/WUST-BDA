@@ -7,12 +7,12 @@ from random import uniform
 
 
 def decision(n: int):
-    if n <= -3:
+    if n <= -1:
         return False
     elif n <= 3:
-        return (n + 3) * 0.15 > uniform(0, 1)
+        return (n + 1) * 0.3 > uniform(0, 1)
     else:
-        return 0.9 > uniform(0,1)
+        return 0.9 > uniform(0, 1)
 
 
 def get_lattice(n: int):
@@ -49,11 +49,13 @@ def steps(prev_n: [ig.Vertex]):
             else:
                 n['decision'] = -1
             next_n.update(set(filter(lambda x: x['decision'] == 0, neighbours)))
+        next_n = list((filter(lambda x: x['decision'] == 0, next_n)))
         steps(next_n)
 
 
 n = 10
 network = get_lattice(n)
 print_lattice(network, n)
-steps([network.vs.find(f'{3},{3}')])
+network.vs.find(f'{3},{3}')['decision'] = 1
+steps(network.vs.find(f'{3},{3}').neighbors())
 print_lattice(network, n)
