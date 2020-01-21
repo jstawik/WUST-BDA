@@ -1,5 +1,7 @@
 import igraph as ig
 from random import uniform
+from seaborn import heatmap
+
 
 # Nodes are required to have the following values:
 # name
@@ -37,6 +39,16 @@ def print_lattice(g: ig.Graph, n: int):
         print('')
 
 
+
+def lattice_to_array(g: ig.Graph, n: int):
+    array = []
+    for i in range(n):
+        row = []
+        for j in range(n):
+            row.append(g.vs.find(f'{i},{j}')['decision'], end=' ')
+        array.append(row)
+
+
 def steps(prev_n: [ig.Vertex]):
     if not prev_n:
         pass
@@ -59,3 +71,4 @@ print_lattice(network, n)
 network.vs.find(f'{3},{3}')['decision'] = 1
 steps(network.vs.find(f'{3},{3}').neighbors())
 print_lattice(network, n)
+heatmap(lattice_to_array(network,10))
